@@ -1,87 +1,80 @@
-<!--INÍCIO DA ÁREA DO CABEÇALHO-->
 <?php
-//INCLUINDO A CHAMADA DO ARQUIVO HEADER.PHP QUE CONTÉM O PADRÃO DO CABEÇALHO
-//include_once em PHP serve para incluir um arquivo em outro, mas apenas uma vez durante a execução do script
-
+//INCLUINDO O TEMPLATE DO CABEÇALHO
 include_once("templates/header.php");
-include_once("config/processo.php");
-
+//CONEXÃO COM O BANCO
+include_once("config/conexao.php");
 ?>
-<!--FIM DO CABEÇALHO-->
-
-<!--INÍCIO DO CORPO DA HOME-->
 <div id="container">
-<!--CHECAR SE EXISTE MENSAGEM NA SESSION, pois sempre que acontecer alguma operação de CRUD, deverá aparecer uma mensagem na SESSION-->
+    <!-- CORPO DA HOME -->
+    <!-- CHECAR SE EXISTE MENSAGEM NA SESSÃO
+Sempre que acontecer alguma operação de CRUD, deverá
+aparecer uma mensagem na SESSÃO -->
 
-<?php if(isset($printMsg) && $printMsg != ''): ?>
-    <p id='msg'><?= $printMsg ?></p>
-<?php endif; ?>
+    <?php if(isset($printMsg) && $printMsg != ''): ?>
+    <p id="msg"><?= $printMsg ?></p>
+    <?php endif; ?>
 
-<h1 id="main-title">Minha Papelaria</h1>
+    <h1 id="main-title">Minha Agenda</h1>
 
-<!--MONTAGEM DA TABELA QUE RECEBERÁ TODOS OS REGISTROS DA TABELA DE CONTATOS QUE ESTÁ NO BANCO-->
-
-<?php if(count($Produto)>0):?>
-    
-    <!--Início da Tabela-->
-    <table class="table" id="tabela-Produto">
+    <?php if (count($contatos) > 0): ?>
+    <table class="table" id="contatos-tabela">
         <thead>
+            <!-- Cabeçalho da tabela-->
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Nome</th>
-                <th scope="col">quantidade de Estoque</th>
-                <th scope="col">preço Custo</th>
-                <th scope="col">preço Venda</th>
-                <th scope="col">quantidade Minima</th>
+                <th scope="col">Telefone</th>
                 <th scope="col"></th>
             </tr>
         </thead>
-        <!--CORPO DA TABELA-->
+        <!-- CORPO DA TABELA -->
         <tbody>
-            <?php foreach($Produto as $Produto): ?>
-                <tr>
-                    <td scope="row" class="col-id"><?= $Produto["id"] ?></td>
-                    <td scope="row"><?= $Produto["nome_prod"] ?></td>
-                    <td scope="row"><?= $Produto["quantEstoq_prod"] ?></td>
-                    <td scope="row"><?= $Produto["precoCust_prod"] ?></td>
-                    <td scope="row"><?= $Produto["precoVend_prod"] ?></td>
-                    <td scope="row"><?= $Produto["quantMin_prod"] ?></td>
-                    <!--INSERINDO OS ÍCONES-->
-                    <td class="actions-icons">
-                        <!--Link para o arquivo show. Lembrar que teremos que direcionar para o arquivo além de fornecer o parâmetro que irá disparar a pesquisa. Esse parâmetro é o ID do contato-->
-                        <a href="<?= $Base_url ?>show.php?id=<?= $Produto["id"]?>">
-                            <i class="fas fa-eye show-icon"></i>
-                        </a>
-                        <a href="<?= $Base_url ?>editarProduto.php?id=<?= $Produto["id"]?>">
-                            <i class="far fa-edit edit-icon"></i>
-                        </a>
-                        <button type="submit" class="btn-deletar">
-                            <i class="fas fa-times delete-icon"></i>
-                        </button>
+            <?php foreach ($contatos as $contato): ?>
+            <tr>
+                <td scope="row" class="col-id"><?= $contato["ID"] ?></td>
+                <td scope="row"><?= $contato["nome"] ?></td>
+                <td scope="row"><?= $contato["telefone"] ?></td>
+
+                <!INSERINDO OS BOTÕES -->
+                    <td class="actions">
+                        <!--CAPTURAR O ID SERVINDO COMO PASSAGEM DE PARÂMETRO-->
+                        <a href="<?= $BASE_URL ?>show.php?ID=<?= $contato["ID"] ?>">
+                            <i class="fas fa-eye check-icon"></i></a>
+
+                        <!--Editar-->
+                        <a href="<?= $BASE_URL ?>editarContato.php?ID=<?= $contato["ID"] ?>">
+                            <i class="far fa-edit edit-icon"></i></a>
+
+                        <!--Deletar-->
+
+                        <!-- BOTAO DELETAR EU PRECISO CRIAR UM FORM PARA MUDAR A AÇÃO DO FORMULARIO--->
+                        <form class="delete-form" action="<?= $BASE_URL ?>config/processo.php" method="POST">
+                        <input type="hidden" name="type" value="delete">
+                        <input type="hidden" name="ID" value="<?= $contato["ID"] ?>">
+                        <!--CRIANDO UMA FUNÇÃO JAVA SCRIP PARA CONFIRMAR SE VOCE QUER EXCLUIR UM CONTATO--->
+                            <button type="submit" class="btn-deletar" onclick="return confirm('TEM CERTEZA QUE DESEJA EXCLUIR ESTE CONTATO? ')">
+                                <!--preciso criar um hiden para dizer que a ação vai ser diferente o nome vai ser delete -->
+                             
+                                <i class="fas fa-times delete-icon"></i>
+                            </button>
+                        </form>
                     </td>
-                </tr>
+            </tr>
 
             <?php endforeach; ?>
         </tbody>
-
-
     </table>
 
     <?php else: ?>
-        <h2>Não existem Produtos Cadastrados no Banco</h2>
-        <h3>
-            <a href="<?= $Base_url ?>addProduto.php">Clique aqui para Adicionar um novo Produto</a>
-        </h3>
-<?php endif; ?>
+    <p id="empty-list-text">Ainda não existem Contatos cadastrados
+        <a href="<?= $BASE_URL ?>addContato.php">
+            CLIQUE AQUI PARA ADICIONAR UM NOVO CONTATO
+        </a>
+    </p>
+
+    <?php endif; ?>
 </div>
-<!--FIM DO CORPO DA HOME-->
-
-
-<!--INÍCIO DA ÁREA DO RODAPÉ-->
 <?php
-//INCLUINDO A CHAMADA DO ARQUIVO FOOTER.PHP QUE CONTÉM O PADRÃO DO RODAPÉ
-
+//INCLUINDO O TEMPLATE DO RODAPÉ
 include_once("templates/footer.php");
-
 ?>
-<!--FIM DA ÁREA DO RODAPÉ-->
